@@ -143,10 +143,10 @@ class ReactiveController(object):
     def teleop_active(self):
         if self.last_teleop is None:
             return False
-        # If teleop velocity is nonzero, consider it active
+        # If teleop velocity is nonzero consider it active
         if abs(self.last_teleop.linear.x) > 0.01 or abs(self.last_teleop.angular.z) > 0.01:
             return True
-        # Otherwise, fall back to timeout check (for brief stop cases)
+        # Otherwise use timeout to check 
         return (time.time() - self.last_teleop_time) <= self.teleop_timeout
 
 
