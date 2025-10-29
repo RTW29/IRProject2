@@ -1,9 +1,6 @@
 <launch>
-  <!-- Using the real robot clock instead of Gazebo simulated time -->
+  <!-- Using the turtlebots clock instead of Gazebo simulated time -->
   <param name="use_sim_time" value="false"/>
-
-  <!-- For the physical robot, we do NOT include the world launch file, since that spawns Gazebo -->
-  <!-- The robot is already running through turtlebot_bringup on the hardware -->
 
   <!-- Include package depthimage_to_laserscan which allows us to convert depth images -->
   <!-- These specify the parameters of the depthscan and how/when we want the image converted/analyzed -->
