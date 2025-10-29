@@ -1,0 +1,38 @@
+<launch>
+  <!-- Using the real robot clock instead of Gazebo simulated time -->
+  <param name="use_sim_time" value="false"/>
+
+  <!-- For the physical robot, we do NOT include the world launch file, since that spawns Gazebo -->
+  <!-- The robot is already running through turtlebot_bringup on the hardware -->
+
+  <!-- This node takes keyboard presses and translates them into robot movement commands -->
+  <node pkg="teleop_twist_keyboard" type="teleop_twist_keyboard.py" name="teleop" output="screen">
+    <!-- Translate cmd_vel to teleop_cmd -->
+    <remap from="/cmd_vel" to="/teleop_cmd"/>
+  </node>
+
+  <!-- Include package depthimage_to_laserscan which allows us to convert depth images -->
+  <!-- These specify the parameters of the depthscan and how/when we want the image converted/analyzed -->
+  <node pkg="depthimage_to_laserscan" type="depthimage_to_laserscan" name="d2l" output="screen">
+    <remap from="image"       to="/camera/depth/image_raw"/>
+    <remap from="camera_info" to="/camera/depth/camera_info"/>
+    <remap from="scan"        to="/scan"/>
+    <param name="scan_height" value="10"/>
+    <param name="range_min"   value="0.2"/>
+    <param name="output_frame_id" value="camera_depth_frame"/>
+  </node>
+
+  <!-- Our python file that controls the turtlebot's movement -->
+  <node pkg="IRProject1" type="reactive_controller.py" name="reactive_controller" output="screen">
+    <!-- parameters of our turtlebot's movement -->
+    <param name="~forward_speed" value="0.18"/>
+    <param name="~turn_speed" value="0.6"/>
+    <param name="~avoid_range_m"  value="0.55"/>
+    <param name="~symmetric_eps_m" value="0.05"/>
+    <param name="~random_turn_rad" value="0.261799"/>
+    <param name="~escape_spread_rad" value="0.523599"/>
+    <param name="~random_stride_m" value="0.3048"/>
+    <param name="~teleop_timeout" value="0.4"/>
+  </node>
+</launch>
+
