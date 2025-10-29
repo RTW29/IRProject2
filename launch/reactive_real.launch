@@ -5,12 +5,6 @@
   <!-- For the physical robot, we do NOT include the world launch file, since that spawns Gazebo -->
   <!-- The robot is already running through turtlebot_bringup on the hardware -->
 
-  <!-- This node takes keyboard presses and translates them into robot movement commands -->
-  <node pkg="teleop_twist_keyboard" type="teleop_twist_keyboard.py" name="teleop" output="screen">
-    <!-- Translate cmd_vel to teleop_cmd -->
-    <remap from="/cmd_vel" to="/teleop_cmd"/>
-  </node>
-
   <!-- Include package depthimage_to_laserscan which allows us to convert depth images -->
   <!-- These specify the parameters of the depthscan and how/when we want the image converted/analyzed -->
   <node pkg="depthimage_to_laserscan" type="depthimage_to_laserscan" name="d2l" output="screen">
@@ -23,7 +17,7 @@
   </node>
 
   <!-- Our python file that controls the turtlebot's movement -->
-  <node pkg="IRProject1" type="reactive_controller.py" name="reactive_controller" output="screen">
+  <node pkg="IRProject2" type="reactive_controller.py" name="reactive_controller" output="screen">
     <!-- parameters of our turtlebot's movement -->
     <param name="~forward_speed" value="0.18"/>
     <param name="~turn_speed" value="0.6"/>

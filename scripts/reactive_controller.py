@@ -33,7 +33,7 @@ class ReactiveController(object):
         self.teleop_timeout = rospy.get_param('~teleop_timeout', 0.4)         
         self.random_stride_m = rospy.get_param('~random_stride_m', 1.0*FT_TO_M)
         # Use teleop instead of cmd_vel
-        self.teleop_topic = rospy.get_param('~teleop_topic', '/teleop_cmd') 
+        self.teleop_topic = rospy.get_param('~teleop_topic', '/teleop_cmd')
         self.log_every = rospy.get_param('~log_every', 10)
 
         # Creates a publisher that sends commands to the turtlebot
@@ -140,9 +140,15 @@ class ReactiveController(object):
         self.d_right = sector_min_by_index(max(0,    mid - off30), w_side)
         self.has_scan = True
 
-    # Check if teleop is still active 
     def teleop_active(self):
-        return (self.last_teleop is not None) and ((time.time() - self.last_teleop_time) <= self.teleop_timeout)
+        if self.last_teleop is None:
+            return False
+        # If teleop velocity is nonzero, consider it active
+        if abs(self.last_teleop.linear.x) > 0.01 or abs(self.last_teleop.angular.z) > 0.01:
+            return True
+        # Otherwise, fall back to timeout check (for brief stop cases)
+        return (time.time() - self.last_teleop_time) <= self.teleop_timeout
+
 
     # Get small angle difference
     def ang_diff(self, a, b):
@@ -234,8 +240,9 @@ class ReactiveController(object):
         cmd.linear.x = self.forward_speed
         return cmd
 
+
     # While turtlebot is active run loop, choose behaviors, publish commands
-    # to turtebot, and self debug 
+    # to turtlebot, and self debug 
     def spin(self):
         while not rospy.is_shutdown():
             cmd = self.choose_behavior()
@@ -247,6 +254,7 @@ class ReactiveController(object):
                               self.mode, self.d_left, self.d_front, self.d_right)
 
             self.rate.sleep()
+
 
 
 if __name__ == '__main__':
